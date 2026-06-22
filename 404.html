@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>404 — Page Not Found | JetZero Z4</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;600;700&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --navy:   #060a14;
+      --accent: #00d4ff;
+      --text:   #e2e8f0;
+      --muted:  #8a9ab8;
+      --border: rgba(0,212,255,0.12);
+    }
+    body {
+      background: var(--navy);
+      color: var(--text);
+      font-family: 'Space Grotesk', sans-serif;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      overflow: hidden;
+      position: relative;
+    }
+    canvas#bg { position: fixed; inset: 0; z-index: 0; pointer-events: none; }
+    .content { position: relative; z-index: 1; padding: 2rem; }
+    .brand {
+      font-size: 0.8rem;
+      font-weight: 700;
+      letter-spacing: 4px;
+      color: var(--accent);
+      text-transform: uppercase;
+      margin-bottom: 3rem;
+      text-decoration: none;
+    }
+    .code {
+      font-size: clamp(5rem, 18vw, 10rem);
+      font-weight: 700;
+      line-height: 1;
+      background: linear-gradient(135deg, var(--accent) 0%, #a78bfa 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      letter-spacing: -4px;
+    }
+    .tagline {
+      font-size: 1.35rem;
+      font-weight: 600;
+      color: var(--text);
+      margin: 1.5rem 0 0.75rem;
+    }
+    .sub {
+      font-size: 0.95rem;
+      color: var(--muted);
+      max-width: 380px;
+      line-height: 1.6;
+      margin: 0 auto 2.5rem;
+    }
+    .btn-home {
+      display: inline-block;
+      padding: 0.85rem 2.2rem;
+      border-radius: 50px;
+      background: var(--accent);
+      color: #000;
+      font-weight: 700;
+      font-size: 0.9rem;
+      letter-spacing: 1px;
+      text-decoration: none;
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+    .btn-home:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 12px 30px rgba(0,212,255,0.35);
+    }
+    .divider {
+      width: 40px;
+      height: 2px;
+      background: var(--accent);
+      margin: 2rem auto;
+      opacity: 0.4;
+      border: none;
+    }
+  </style>
+</head>
+<body>
+  <canvas id="bg"></canvas>
+  <div class="content">
+    <a href="jetzero-z4.html" class="brand">JETZERO</a>
+    <div class="code">404</div>
+    <p class="tagline">Off the flight plan.</p>
+    <hr class="divider" />
+    <p class="sub">The page you're looking for doesn't exist or has been moved. Let's get you back on course.</p>
+    <a href="jetzero-z4.html" class="btn-home">← Return to Z4</a>
+  </div>
+
+  <script>
+    /* Minimal paper-plane background for 404 */
+    (function () {
+      const canvas = document.getElementById('bg');
+      const ctx = canvas.getContext('2d');
+      let W, H;
+      function resize() { W = canvas.width = window.innerWidth; H = canvas.height = window.innerHeight; }
+      window.addEventListener('resize', resize);
+      resize();
+
+      const COLORS = ['#00d4ff','#f59e0b','#10b981','#a78bfa','#f87171'];
+      const N = 18;
+      const planes = Array.from({ length: N }, () => spawn());
+
+      function pick(arr) { return arr[Math.floor(Math.random() * arr.length)]; }
+      function spawn() {
+        const angle = (Math.random() * 70 - 35) * Math.PI / 180;
+        const speed = 0.4 + Math.random() * 0.8;
+        return {
+          x: Math.random() * W,
+          y: Math.random() * H,
+          angle, speed,
+          size: 6 + Math.random() * 8,
+          color: pick(COLORS),
+          alpha: 0.15 + Math.random() * 0.3,
+        };
+      }
+      function recycle(p) {
+        Object.assign(p, spawn());
+        p.x = -20;
+        p.y = Math.random() * H;
+      }
+
+      function drawPlane(p) {
+        ctx.save();
+        ctx.translate(p.x, p.y);
+        ctx.rotate(p.angle);
+        ctx.globalAlpha = p.alpha;
+        ctx.fillStyle = p.color;
+        ctx.beginPath();
+        ctx.moveTo(p.size, 0);
+        ctx.lineTo(-p.size * 0.6,  p.size * 0.4);
+        ctx.lineTo(-p.size * 0.3, 0);
+        ctx.lineTo(-p.size * 0.6, -p.size * 0.4);
+        ctx.closePath();
+        ctx.fill();
+        ctx.restore();
+      }
+
+      function loop() {
+        ctx.clearRect(0, 0, W, H);
+        planes.forEach(p => {
+          p.x += Math.cos(p.angle) * p.speed;
+          p.y += Math.sin(p.angle) * p.speed;
+          if (p.x > W + 30 || p.y < -30 || p.y > H + 30) recycle(p);
+          drawPlane(p);
+        });
+        requestAnimationFrame(loop);
+      }
+      loop();
+    })();
+  </script>
+</body>
+</html>
