@@ -2106,9 +2106,9 @@
          SERVICE_ID   → Email Services → your service → Service ID
          TEMPLATE_ID  → Email Templates → your template → Template ID
     ─────────────────────────────────────────────────────────────────── */
-    const EMAILJS_PUBLIC_KEY  = '';
-    const EMAILJS_SERVICE_ID  = '';
-    const EMAILJS_TEMPLATE_ID = '';
+    const EMAILJS_PUBLIC_KEY  = 'UN5MV0Kal2bJjM8Sd';
+    const EMAILJS_SERVICE_ID  = 'service_36oruds';
+    const EMAILJS_TEMPLATE_ID = 'template_rl0nkua';
 
     emailjs.init({ publicKey: EMAILJS_PUBLIC_KEY });
 
@@ -2117,8 +2117,8 @@
          TAWKTO_PROPERTY_ID → Dashboard → Administration → Property ID
          TAWKTO_WIDGET_ID   → Dashboard → Administration → Widget ID
     ─────────────────────────────────────────────────────────────────── */
-    const TAWKTO_PROPERTY_ID = '';
-    const TAWKTO_WIDGET_ID   = '';
+    const TAWKTO_PROPERTY_ID = '6a398b063b7bf71d4362549e';
+    const TAWKTO_WIDGET_ID   = '1jroce4k9';
 
     if (TAWKTO_PROPERTY_ID && TAWKTO_WIDGET_ID) {
       var Tawk_API = Tawk_API || {}, Tawk_LoadStart = new Date();
@@ -3878,9 +3878,9 @@
                    with the To: address pre-filled. This is an ANCHOR TAG
                    (<a>) using the mailto: protocol — not a form button. -->
 
-              <a href="mailto:info@jetzero.us" class="btn btn-gold">
+              <button type="button" class="btn btn-gold" onclick="handleEmailDirectly(event)">
                 Email Directly
-              </a>
+              </button>
 
             </div><!-- End form-actions -->
 
@@ -4880,6 +4880,60 @@
         });
 
     } /* end handleSubmit() */
+
+
+    function handleEmailDirectly(e) {
+      const btn  = e.currentTarget;
+      const form = document.getElementById('inquiryForm');
+      const g    = id => (form.querySelector('#' + id)?.value || '').trim();
+      const email = g('email');
+
+      /* Always open the mailto link so the user's email client launches */
+      const subject = encodeURIComponent('JetZero Z4 Industry Briefing Request');
+      const body    = encodeURIComponent(
+        'Name: '         + (g('firstName') + ' ' + g('lastName')).trim() + '\n' +
+        'Email: '        + (email || '—') + '\n' +
+        'Phone: '        + (g('phone')        || '—') + '\n' +
+        'Organisation: ' + (g('organization') || '—') + '\n' +
+        'Fleet size: '   + (g('fleetSize')    || '—') + '\n' +
+        'Message: '      + (g('message')      || '—')
+      );
+      window.location.href = 'mailto:info@jetzero.us?subject=' + subject + '&body=' + body;
+
+      /* Also send via EmailJS if an email address has been entered */
+      if (!email) return;
+
+      const selectedRoutes    = [...form.querySelectorAll('#routes option:checked')].map(o => o.text).join(', ') || 'None selected';
+      const selectedInterests = [...form.querySelectorAll('[name="interest"]:checked')].map(o => o.value).join(', ') || 'None selected';
+
+      const templateParams = {
+        from_name    : (g('firstName') + ' ' + g('lastName')).trim() || 'Not provided',
+        from_email   : email,
+        phone        : g('phone')        || 'Not provided',
+        organization : g('organization') || 'Not provided',
+        fleet_size   : g('fleetSize')    || 'Not provided',
+        org_type     : g('orgType')      || 'Not provided',
+        routes       : selectedRoutes,
+        interests    : selectedInterests,
+        message      : g('message')      || 'Sent via Email Directly button.',
+      };
+
+      btn.textContent = 'Sending…';
+      btn.disabled    = true;
+
+      emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, templateParams)
+        .then(() => {
+          btn.textContent      = '✓ Email Sent';
+          btn.style.background = 'var(--green)';
+          btn.style.color      = '#fff';
+          showToast('success', 'Email Sent', 'Your details have been sent. We\'ll be in touch within two business days.');
+        })
+        .catch(err => {
+          console.error('EmailJS error (Email Directly):', err);
+          btn.textContent = 'Email Directly';
+          btn.disabled    = false;
+        });
+    } /* end handleEmailDirectly() */
 
 
     /* ══════════════════════════════════════════════════════════
