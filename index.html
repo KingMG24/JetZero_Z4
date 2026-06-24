@@ -1568,6 +1568,7 @@
     body.light-mode .card h3          { color: var(--white); }
     body.light-mode .card p           { color: var(--muted); }
     body.light-mode .feature-list li  { background: rgba(12,17,32,0.6); border-color: var(--border); color: var(--text); }
+    body.light-mode .feature-list li:hover { background: rgba(12,17,32,0.82); border-color: rgba(16,185,129,0.4); color: #ffffff; box-shadow: 0 8px 28px rgba(0,0,0,0.18), 0 2px 8px rgba(16,185,129,0.12); }
     body.light-mode .table-wrapper { background: rgba(255,255,255,0.85); }
     body.light-mode td             { color: #192338; }
     body.light-mode .form-section-bg { background: #e4ecf8; }
@@ -4847,15 +4848,18 @@
       const selectedInterests = [...form.querySelectorAll('[name="interest"]:checked')].map(o => o.value).join(', ') || 'None selected';
 
       const templateParams = {
-        from_name    : g('firstName') + ' ' + g('lastName'),
-        from_email   : g('email'),
-        phone        : g('phone')        || 'Not provided',
-        organization : g('organization') || 'Not provided',
-        fleet_size   : g('fleetSize')    || 'Not provided',
-        org_type     : g('orgType')      || 'Not provided',
-        routes       : selectedRoutes,
-        interests    : selectedInterests,
-        message      : g('message')      || 'No message provided',
+        name    : (g('firstName') + ' ' + g('lastName')).trim() || 'Unknown',
+        time    : new Date().toLocaleString(),
+        message : [
+          'Email: '        + (g('email')        || '—'),
+          'Phone: '        + (g('phone')        || '—'),
+          'Organisation: ' + (g('organization') || '—'),
+          'Fleet Size: '   + (g('fleetSize')    || '—'),
+          'Org Type: '     + (g('orgType')      || '—'),
+          'Routes: '       + selectedRoutes,
+          'Interests: '    + selectedInterests,
+          'Message: '      + (g('message')      || '—'),
+        ].join('\n'),
       };
 
       /* ── Send via EmailJS ── */
@@ -4907,15 +4911,18 @@
       const selectedInterests = [...form.querySelectorAll('[name="interest"]:checked')].map(o => o.value).join(', ') || 'None selected';
 
       const templateParams = {
-        from_name    : (g('firstName') + ' ' + g('lastName')).trim() || 'Not provided',
-        from_email   : email,
-        phone        : g('phone')        || 'Not provided',
-        organization : g('organization') || 'Not provided',
-        fleet_size   : g('fleetSize')    || 'Not provided',
-        org_type     : g('orgType')      || 'Not provided',
-        routes       : selectedRoutes,
-        interests    : selectedInterests,
-        message      : g('message')      || 'Sent via Email Directly button.',
+        name    : (g('firstName') + ' ' + g('lastName')).trim() || 'Unknown',
+        time    : new Date().toLocaleString(),
+        message : [
+          'Email: '        + (email             || '—'),
+          'Phone: '        + (g('phone')        || '—'),
+          'Organisation: ' + (g('organization') || '—'),
+          'Fleet Size: '   + (g('fleetSize')    || '—'),
+          'Org Type: '     + (g('orgType')      || '—'),
+          'Routes: '       + selectedRoutes,
+          'Interests: '    + selectedInterests,
+          'Message: '      + (g('message')      || 'Sent via Email Directly button.'),
+        ].join('\n'),
       };
 
       btn.textContent = 'Sending…';
