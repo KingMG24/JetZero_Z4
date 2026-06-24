@@ -68,6 +68,9 @@
 
   <title>JetZero Z4 | Blended Wing Body Aircraft</title>
 
+  <!-- Tells browsers this page is always served over HTTPS (1 year) -->
+  <meta http-equiv="Strict-Transport-Security" content="max-age=31536000">
+
   <!-- Google Fonts: Inter for clean, modern aerospace typography -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -1814,7 +1817,7 @@
       display: flex; flex-direction: column; align-items: center; justify-content: center;
       transition: opacity 0.7s ease, visibility 0.7s ease;
     }
-    #page-loader.done { opacity: 0; visibility: hidden; pointer-events: none; }
+    #page-loader.done { opacity: 0; visibility: hidden; pointer-events: none; z-index: -1; }
     #loader-canvas { width: 260px; height: 90px; }
     .loader-label {
       margin-top: 1.2rem;
@@ -2113,24 +2116,21 @@
 
     emailjs.init({ publicKey: EMAILJS_PUBLIC_KEY });
 
-    /* ── Tawk.to Live Chat ──────────────────────────────────────────────
-       Sign up at https://tawk.to, create a property, then paste your IDs:
-         TAWKTO_PROPERTY_ID → Dashboard → Administration → Property ID
-         TAWKTO_WIDGET_ID   → Dashboard → Administration → Widget ID
-    ─────────────────────────────────────────────────────────────────── */
-    const TAWKTO_PROPERTY_ID = '6a398b063b7bf71d4362549e';
-    const TAWKTO_WIDGET_ID   = '1jroce4k9';
-
-    if (TAWKTO_PROPERTY_ID && TAWKTO_WIDGET_ID) {
-      var Tawk_API = Tawk_API || {}, Tawk_LoadStart = new Date();
-      var s = document.createElement('script');
-      s.async = true;
-      s.src = 'https://embed.tawk.to/' + TAWKTO_PROPERTY_ID + '/' + TAWKTO_WIDGET_ID;
-      s.charset = 'UTF-8';
-      s.setAttribute('crossorigin', '*');
-      document.head.appendChild(s);
-    }
   </script>
+
+  <!--Start of Tawk.to Script-->
+  <script type="text/javascript">
+  var Tawk_API=Tawk_API||{}, Tawk_LoadStart=new Date();
+  (function(){
+  var s1=document.createElement("script"),s0=document.getElementsByTagName("script")[0];
+  s1.async=true;
+  s1.src='https://embed.tawk.to/6a398b063b7bf71d4362549e/1jroce4k9';
+  s1.charset='UTF-8';
+  s1.setAttribute('crossorigin','*');
+  s0.parentNode.insertBefore(s1,s0);
+  })();
+  </script>
+  <!--End of Tawk.to Script-->
 
 </head>
 <!-- End of <head> section.  Everything below is visible page content. -->
